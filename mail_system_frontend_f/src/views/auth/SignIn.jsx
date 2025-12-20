@@ -60,7 +60,7 @@ export default function SignIn() {
             Not registered yet?
           </span>
           <Link
-            to="/auth/sign-up"
+            to="/auth/owner/sign-up"
             className="ml-1 text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
           >
             Create an account

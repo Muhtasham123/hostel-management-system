@@ -7,6 +7,7 @@ import routes from "routes.js";
 import Mail from "../../views/admin/mail/index"
 import ViewMail from "../../views/admin/viewmail/index"
 import ViewScheduledMail from "../../views/admin/scheduledmails/components/ViewMail"
+import AddHostel from "../../views/admin/hostels/components/form"
 
 export default function Admin(props) {
   const { ...rest } = props;
@@ -32,6 +33,9 @@ export default function Admin(props) {
       setCurrentRoute("Compose Mail");
     } else if (window.location.pathname.includes("schedule")){
       setCurrentRoute("Schedule Mail");
+    }
+    else if (window.location.pathname.includes("hostel/add")) {
+      setCurrentRoute("Add Hostel");
     }
 
     for (let i = 0; i < routes.length; i++) {
@@ -71,6 +75,7 @@ export default function Admin(props) {
     newRoutes.push(<Route path={`/scheduleMail/:recipients?`} element={<Mail />} />)
     newRoutes.push(<Route path={`/viewMail/:id?`} element={<ViewMail />} />)
     newRoutes.push(<Route path={`/view/scheduled-mail/:id?`} element={<ViewScheduledMail />} />)
+    newRoutes.push(<Route path={`/hostel/add`} element={<AddHostel reqType="post" data={null}/>} />)
 
     return newRoutes
   };
@@ -100,7 +105,7 @@ export default function Admin(props) {
 
                 <Route
                   path="/"
-                  element={<Navigate to="/admin/default" replace />}
+                  element={<Navigate to="/admin/hostels" replace />}
                 />
               </Routes>
             </div>

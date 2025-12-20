@@ -7,6 +7,11 @@ import SignUpHandler from "./handlers"
 export default function SignUp() {
     const [state, dispatch] = useReducer(reducer, {username:"",email:"", password:""})
     const url = "http://localhost:4000/admin/auth/signup"
+    const route = window.location.pathname
+    let account_type = "customer"
+    if(route.includes("owner")){
+      account_type = "owner"
+    }
     const navigate = useNavigate()
 
   return (
@@ -66,7 +71,7 @@ export default function SignUp() {
             username:state.username,
             email:state.email,
             password:state.password,
-            role:"admin"
+            account_type
         }, navigate)}>
           Sign Up
         </button>
@@ -75,7 +80,7 @@ export default function SignUp() {
             Already have an account?
           </span>
           <Link 
-            to="/auth/sign-in"
+            to="/auth/owner/sign-in"
             className="ml-1 text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
           >
             Login

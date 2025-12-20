@@ -7,7 +7,7 @@ const authHandler = async (e, url, user, navigate)=>{
             
             const res = await axios.post(url, user,{withCredentials:true})
             console.log(res.data.message)
-            navigate("/admin/default")
+            navigate("/admin/hostels")
 
         } catch (error) {
             if(error.response){

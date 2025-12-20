@@ -1,5 +1,44 @@
 const jwt = require("jsonwebtoken")
 const pool = require("./db")
+const multer = require("multer")
+const { CloudinaryStorage } = require("multer-storage-cloudinary")
+const cloudinary = require("./cloudinaryConfig")
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "hostels",
+    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    transformation: [{ width: 1200, height: 800, crop: "limit" }]
+  }
+})
+
+const upload = multer({ storage })
+
+const multerUpload = (req, res, next) => {
+    upload.single("photo")(req, res, (err) => {
+      if (err) {
+        console.error("Multer error:", err)
+
+        // Multer-specific errors
+        if (err instanceof multer.MulterError) {
+          return res.status(400).json({
+            success: false,
+            message: err.message
+          })
+        }
+
+        // Cloudinary or other errors
+        return res.status(400).json({
+          success: false,
+          message: err.message || "File upload failed"
+        })
+      }
+
+      next()
+    })
+  }
+
 
 // verifying token
 const verifyToken = (req, res, next)=>{
@@ -27,7 +66,10 @@ const isAdmin = async(req, res, next)=>{
             return res.status(400).json({success:false, message:"Hostel context is required"})
         }
 
-        let [role] = await pool.query("SELECT role FROM roles r JOIN hostel_users hu ON r.id = hu.role_id WHERE hu.user_id = ? AND hu.hostel_id = ?",[user_id, hostel_id])
+        let [role] = await pool.query("SELECT role FROM roles r JOIN hostel_users hu ON r.id = hu.role_id WHERE hu.user_id = ?",[user_id])
+
+        console.log(role)
+
         role = role[0].role
 
         if(role !== "admin"){
@@ -64,9 +106,9 @@ const isCustomer = async(req, res, next)=>{
         }
         next()
     } catch (error) {
-        console.log("Error in is owner : ", error.message)
+        console.log("Error in is customer : ", error.message)
         return res.status(500).json({success:false, message:"Internal server error"})
     }
 }
 
-module.exports = {verifyToken, isAdmin, isCustomer, isOwner}
+module.exports = {verifyToken, isAdmin, isCustomer, isOwner, multerUpload}

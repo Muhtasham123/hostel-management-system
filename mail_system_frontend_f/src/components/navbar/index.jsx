@@ -24,7 +24,7 @@ const Navbar = (props) => {
     try {
       const res = await axios.post("http://localhost:4000/admin/auth/logout")
       console.log(res.data.message)
-      navigate("/auth/sign-in")
+      navigate("/auth/owner/sign-in")
     } catch (error) {
       if(error.response){
         console.log(error.response.data.message)

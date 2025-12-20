@@ -13,6 +13,8 @@ const schedueledEmailRouter = require("./schedueledEmails/router")
 const dashboardRouter = require("./dashboard/routes")
 const { hostelRouterAdmin, hostelRouterCustomer } = require("./hostels/router")
 require("./schedueledEmails/cron")
+const cloudinary = require("./cloudinaryConfig");
+
 
 const app = express()
 app.use(express.json())

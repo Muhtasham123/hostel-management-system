@@ -8,7 +8,7 @@ import { FaRegBuilding, FaDoorOpen } from "react-icons/fa";
 import { IoMdSend } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
 import Widget from "components/widget/Widget";
-
+import Map from "components/map/index";
 
 import axios from "axios"
 import {toast} from "react-toastify"
@@ -69,6 +69,10 @@ const Dashboard = () => {
           title={"Available seats"}
           subtitle={data.seats}
         />
+      </div>
+
+      <div className="w-full mt-10">
+        <Map/>
       </div>
 
       {/* Charts */}

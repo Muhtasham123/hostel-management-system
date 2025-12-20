@@ -8,12 +8,23 @@ export function SidebarLinks(props) {
   // Chakra color mode
   let location = useLocation();
 
-  const { routes } = props;
+  let { routes } = props;
+  const allRoutes = routes
+  const filteredRoutes = routes.filter((r)=>{
+    return r.path === "hostels" || r.path === "owner/sign-up" || r.path === "owner/sign-in"
+  })
 
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
     return location.pathname.includes(routeName);
   };
+
+  if(activeRoute("hostels")){
+    routes = filteredRoutes
+  }else{
+    routes = allRoutes
+  }
+
 
   const createLinks = (routes) => {
     return routes.map((route, index) => {

@@ -73,6 +73,7 @@ const login = async(req, res)=>{
         const token = createToken({id:user.id, username, account_type:user.account_type})
         res.cookie("token",token,{
             maxAge:1000 * 60 * 60 * 2,
+            httpOnly:true
         })
         return res.status(201).json({success:true, message:"Logged in"})
         
