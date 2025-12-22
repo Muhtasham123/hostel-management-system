@@ -2,11 +2,13 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import DashIcon from "components/icons/DashIcon";
+import { context } from "context";
 // chakra imports
 
 export function SidebarLinks(props) {
   // Chakra color mode
   let location = useLocation();
+  const {hostelContext} = React.useContext(context)
 
   let { routes } = props;
   const allRoutes = routes
@@ -34,7 +36,7 @@ export function SidebarLinks(props) {
         route.layout === "/rtl"
       ) {
         return (
-          <Link key={index} to={route.layout + "/" + route.path}>
+          <Link key={index} to={route.path !== "default" ? route.layout + "/" + route.path : `/admin/default/${hostelContext}`}>
             <div className="relative mb-3 flex hover:cursor-pointer">
               <li
                 className="my-[3px] flex cursor-pointer items-center px-8"

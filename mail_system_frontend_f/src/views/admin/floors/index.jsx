@@ -7,8 +7,11 @@ import {floorsHandler} from "./variables/handlers"
 import { IoIosAddCircleOutline } from "react-icons/io";
 import EditModel from "./components/EditModel"
 import DeleteModel from "./components/DeleteModel"
+import { context } from "context"
+import {useContext} from "react"
 
 const Floors = () => {
+    const {hostelContext} = useContext(context)
     const [state, dispatch] = useReducer(reducer, 
         {
             floors:[], 
@@ -21,7 +24,7 @@ const Floors = () => {
     const [floorNumber, setFloorNumber] = useState(null)
 
     useEffect(()=>{
-        floorsHandler("get", dispatch, null, {})
+        floorsHandler("get", dispatch, null, {}, hostelContext)
     },[state.refreshFloors])
 
   return (
@@ -54,7 +57,7 @@ const Floors = () => {
 
             {/* Add Button */}
             <button onClick={()=>{
-            floorsHandler("add", null, null, {number:floorNumber})
+            floorsHandler("add", null, null, {number:floorNumber}, hostelContext)
             dispatch({type:"add"})
             }} className="flex gap-2 justify-center items-center hover:bg-blue-700 p-3 rounded-md text-white bg-blueSecondary font-bold text-2xl">
             Add Floor<IoIosAddCircleOutline />

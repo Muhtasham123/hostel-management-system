@@ -1,6 +1,9 @@
 import {useState, useEffect} from "react"
 import MiniCalendar from "components/calendar/MiniCalendar";
 import PieChartCard from "views/admin/default/components/PieChartCard";
+import {context} from "../../../context/index"
+import { useContext } from "react";
+import {useParams} from "react-router-dom"
 
 import { FaBed } from "react-icons/fa";
 import { FaUsersLine } from "react-icons/fa6";
@@ -13,28 +16,40 @@ import Map from "components/map/index";
 import axios from "axios"
 import {toast} from "react-toastify"
 
+import {BounceLoader} from "react-spinners"
+
 const Dashboard = () => {
   const [data,setData] = useState({})
+  const [loading, setLoading] = useState(true)
+  const {hostel_id} = useParams()
+  const {hostelContext, setHostelContext} = useContext(context)
+
 
   const fetchData = async()=>{
     try{
-      const res = await axios.get("http://localhost:4000/admin/dashboard/getDashboard",{withCredentials:true})
-
+      setLoading(true)
+      const res = await axios.get(`http://localhost:4000/admin/dashboard/${hostel_id}`,{withCredentials:true})
+      
       setData(res.data.data)
+      setLoading(false)
     }catch(error){
       if(error.response){
         toast.error(error.response.data.message)
       }else{
         toast.error("Failed to fetch data")
       }
+      setLoading(false)
     }
   }
 
   useEffect(()=>{
+    setHostelContext(hostel_id)
     fetchData()
   },[])
 
   return (
+    !loading
+    ?
     <div>
       {/* Card widget */}
 
@@ -72,7 +87,9 @@ const Dashboard = () => {
       </div>
 
       <div className="w-full mt-10">
-        <Map/>
+        <Map 
+        latitude = {Number.parseFloat(data.latitude)} 
+        longitude = {Number.parseFloat(data.longitude)}/>
       </div>
 
       {/* Charts */}
@@ -82,6 +99,10 @@ const Dashboard = () => {
         <PieChartCard series={[data.filled ?? 0, data.vaccant ?? 0]} />
       </div>
 
+    </div>
+    :
+    <div className = "h-[100vh] w-full flex items-center justify-center">
+        <BounceLoader color="#0b24c7" />
     </div>
   );
 };

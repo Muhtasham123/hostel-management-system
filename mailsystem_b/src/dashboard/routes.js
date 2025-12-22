@@ -4,6 +4,6 @@ const dashboardItems = require("./controllers")
 
 const dashboardRouter = express.Router()
 
-dashboardRouter.get("/getDashboard",verifyToken, isAdmin, dashboardItems)
+dashboardRouter.get("/:hostel_id",verifyToken, isAdmin, dashboardItems)
 
 module.exports = dashboardRouter

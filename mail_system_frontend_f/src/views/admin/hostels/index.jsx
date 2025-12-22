@@ -47,7 +47,7 @@ const Hostels = () => {
 
                     <Link to="/admin/hostel/edit" className="p-2 rounded-md bg-yellow-500 text-white">EDIT</Link>
 
-                    <Link to="/admin/default" className="p-2 rounded-md bg-green-500 text-white">VIEW</Link>
+                    <Link to={`/admin/default/${h.id}`} className="p-2 rounded-md bg-green-500 text-white">VIEW</Link>
                 </div>
             </div>
         })

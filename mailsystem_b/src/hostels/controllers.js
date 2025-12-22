@@ -8,10 +8,21 @@ const addHostel = async(req, res)=>{
 
     try {
         const admin_id = req.user.id
-        let {name, location, description, type, services} = req.body
+        let {name, location, description, type, services, phone, latitude, longitude} = req.body
 
-        if(!name || !location || !description || !type || services.length === 0){
+        if(!name || !location || !description || !type || services.length === 0 || !phone){
             return res.status(400).json({success:false, message:"All fields are required"})
+        }
+
+        if(phone. length !== 11){
+            return res.status(400).json({success:false, message:"Invalid phone no"})
+        }
+
+        latitude = Number.parseFloat(latitude)
+        longitude = Number.parseFloat(longitude)
+
+        if(latitude > 90 || latitude < -90 || longitude > 180 || longitude < -180 || Number.isNaN(latitude) || Number.isNaN(longitude)){
+            return res.status(400).json({success:false, message:"Invalid coordinates"})
         }
 
         if (!req.file) {
@@ -40,7 +51,7 @@ const addHostel = async(req, res)=>{
             return res.status(400).json({success:false, message:"Hostel name already exists"})
         }
 
-        const [insertResult] = await connection.query("INSERT INTO hostels(name, location, description, type, photo) VALUES(?, ?, ?, ?, ?)", [name, location, description, type, photoUrl])
+        const [insertResult] = await connection.query("INSERT INTO hostels(name, location, description, type, photo, latitude, longitude, contact) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", [name, location, description, type, photoUrl, latitude, longitude, phone])
 
         let [role_id] = await connection.query("SELECT id FROM roles WHERE role = 'admin'")
         role_id = role_id[0].id

@@ -1,7 +1,6 @@
 import React from "react";
 import Card from "components/card";
 import { IoMdCreate, IoMdTrash } from "react-icons/io";
-import { Link } from "react-router-dom";
 
 import {
   createColumnHelper,

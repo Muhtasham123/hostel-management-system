@@ -8,6 +8,9 @@ const Form = ({reqType, data}) => {
     const navigate = useNavigate()
     const [name, setName] = useState(data ? data.name : "")
     const [location, setLocation] = useState(data ? data.location : "")
+    const [phone, setPhone] = useState(data ? data.phone : "")
+    const [latitude, setLatitude] = useState(data ? data.latitude : "")
+    const [longitude, setLongitude] = useState(data ? data.longitude : "")
     const [description, setDescription] = useState(data ? data.description : "")
     const [services, setServices] = useState(data ? data.services : [])
     const [service, setService] = useState("")
@@ -24,6 +27,9 @@ const Form = ({reqType, data}) => {
             formData.append("type", type)
             formData.append("services", JSON.stringify(services))
             formData.append("description", description)
+            formData.append("phone",phone)
+            formData.append("latitude",latitude)
+            formData.append("longitude",longitude)
 
             let res
             if(reqType === "post"){
@@ -46,25 +52,39 @@ const Form = ({reqType, data}) => {
   return (
       <div
           className={`!z-5 relative flex mt-10 p-8 rounded-[20px] bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:shadow-none $`}>
-          <form className="w-full grid grid-cols-1 md:grid-cols-2 gap-4"
+          <form className="w-full grid grid-cols-1 md:grid-cols-2 gap-8"
           onSubmit={(e)=>handleSubmit(e)}>
             <div className = "flex flex-col gap-2">
-                <label>Enter hostel name</label>
-                <input className = "p-4 rounded-md border border-gray-700" placeholder="Hostel name"
+                <label className = "p-4">Enter hostel name</label>
+                <input className = "p-4 border-b border-gray-700" placeholder="Hostel name"
                 value = {name}
                 onChange = {(e)=>setName(e.target.value)}/>
             </div>
 
             <div className="flex flex-col gap-2">
-                <label>Enter hostel location</label>
-                  <input className="p-4 rounded-md border border-gray-700" placeholder="Lahore,Johar town" 
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}/>
+                <label className="p-4">Enter hostel address</label>
+                <input className="p-4 border-b border-gray-700" placeholder="Lahore,Johar town" 
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}/>
             </div>
 
             <div className="flex flex-col gap-2">
-                <label>Select hostel type</label>
-                <select className="p-4 rounded-md border border-gray-700" 
+                <label className="p-4">Enter latitude</label>
+                <input className="p-4 border-b border-gray-700" placeholder="Paste from google map(31.3456)"
+                    value={latitude}
+                    onChange={(e) => setLatitude(e.target.value)} />
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <label className="p-4">Enter longitude</label>
+                <input className="p-4 border-b border-gray-700" placeholder=" Paste from google map(74.3456)"
+                    value={longitude}
+                    onChange={(e) => setLongitude(e.target.value)} />
+            </div>
+
+            <div className="flex flex-col gap-2">
+                  <label className="p-4">Select hostel type</label>
+                <select className="p-4 border-b border-gray-700" 
                 value={type}
                 onChange={(e) => setType(e.target.value)}>
                     <option value="boys">Boys</option>
@@ -74,14 +94,14 @@ const Form = ({reqType, data}) => {
             </div>
 
             <div className="flex flex-col gap-2">
-                <label>Upload Photo</label>
-                <input type="file" className="p-4 rounded-md border border-gray-700"
+                  <label className="p-4">Upload Photo</label>
+                <input type="file" className="p-4 border-b border-gray-700"
                 onChange={(e) => setPhoto(e.target.files[0])}/>
             </div>
 
             <div className="flex flex-col gap-2 col-span-2">
-                <label>Services</label>
-                <input className="p-4 rounded-md border border-gray-700" placeholder="Enter service"
+                  <label className="p-4">Services</label>
+                <input className="p-4 border-b border-gray-700" placeholder="Enter service"
                 value={service}
                 onChange={(e) => setService(e.target.value)}/>
 
@@ -114,9 +134,16 @@ const Form = ({reqType, data}) => {
 
             </div>
 
+              <div className="flex flex-col gap-2">
+                  <label className="p-4">Enter Contact number</label>
+                  <input className="p-4 border-b border-gray-700" placeholder="00000000000"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)} />
+              </div>
+
             <div className="flex flex-col gap-2 col-span-2">
-                <label>Description</label>
-                <textarea type="file" className="p-4 rounded-md border w-full border-gray-700" placeholder="Enter all rent related and other information here" rows="10"
+                  <label className="p-4">Description</label>
+                <textarea type="file" className="p-4 border-b w-full border-gray-700" placeholder="Enter all rent related and other information here" rows="10"
                 value = {description}
                 onChange = {(e)=>setDescription(e.target.value)}/>
             </div>
