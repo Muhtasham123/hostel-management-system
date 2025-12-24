@@ -1,12 +1,18 @@
 import React from 'react'
 import { roomsHandler } from '../variables/handlers'
+import { context } from 'context'
+import {useContext} from "react"
 
 const EditModel = ({state, dispatch}) => {
+    const {hostelContext} = useContext(context)
   return (
       <div className={`fixed h-[100vh] w-[100vw] inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50`}>
           <form onSubmit={async (e) => {
               e.preventDefault()
-              await roomsHandler("edit", null, state.roomId, { number: state.roomNumber, seats: state.seats, floorNo: state.selectedFloor })
+
+              const room = state.rooms.filter((r) => Number(r.id) === Number(state.roomId))
+              const floorId = room[0].floor_id
+              await roomsHandler("edit", null, state.roomId, { number: state.roomNumber, seats: state.seats, floorNumber: state.selectedFloor }, floorId, hostelContext)
               dispatch({ type: "close_model" })
               dispatch({ type: "edit" })
               dispatch({ type: "change_room_number", payload: null })

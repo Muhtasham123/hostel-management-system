@@ -1,7 +1,7 @@
 import React from 'react'
 import { floorsHandler } from '../variables/handlers'
-import { context } from "context"
-import {useContext} from "react"
+import { context } from 'context'
+import { useContext } from 'react'
 
 const DeleteModel = ({ floorId, dispatch}) => {
   const {hostelContext} = useContext(context)
@@ -12,7 +12,7 @@ const DeleteModel = ({ floorId, dispatch}) => {
 
               <div className="flex w-full justify-end gap-4 mt-4">
                   <button onClick = {async()=>{
-                    await floorsHandler("delete", dispatch, floorId, hostelContext)
+                    await floorsHandler("delete", dispatch, floorId, {}, hostelContext)
                     dispatch({ type: "delete" })
                     dispatch({type:"close_delete_model"})
                   }}className="hover:bg-blue-700 p-2 rounded-md text-white bg-blueSecondary">Yes</button>

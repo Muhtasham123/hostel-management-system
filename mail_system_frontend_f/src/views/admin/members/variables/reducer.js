@@ -6,7 +6,7 @@ const reducer = (state, action)=>{
         return {...state, roles:action.payload, role:action.payload[0].role}
     }
     else if(action.type === "reset"){
-        return {...state, name:null, email:null, role:null, roomNumber:null}
+        return {...state, name:null, email:null, role:null, roomNumber:null, phone:null, pass:null}
     }
     else if(action.type === "get_rooms"){
         return {...state, rooms:action.payload}
@@ -62,6 +62,12 @@ const reducer = (state, action)=>{
     }
     else if(action.type === "change_email"){
         return {...state, email:action.payload}
+    }
+    else if(action.type === "change_pass"){
+        return {...state, pass:action.payload}
+    }
+    else if(action.type === "change_phone"){
+        return {...state, phone:action.payload}
     }
     else if(action.type === "change_role"){
         return {...state, role:action.payload}

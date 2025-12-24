@@ -64,7 +64,7 @@ export default function Admin(props) {
     const newRoutes = routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
-          <Route path={prop.path !== "default" ? `/${prop.path}` : "/default/:hostel_id"} element={prop.component} key={key} />
+          <Route path={`/${prop.path}` + (prop.contexted ? "/:hostel_id" : "")} element={prop.component} key={key} />
         );
       }else {
         return null;

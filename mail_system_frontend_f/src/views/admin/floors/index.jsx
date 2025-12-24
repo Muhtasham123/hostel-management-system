@@ -9,9 +9,11 @@ import EditModel from "./components/EditModel"
 import DeleteModel from "./components/DeleteModel"
 import { context } from "context"
 import {useContext} from "react"
+import {useParams} from "react-router-dom"
 
 const Floors = () => {
-    const {hostelContext} = useContext(context)
+    const {hostel_id} = useParams()
+    const {setHostelContext} = useContext(context)
     const [state, dispatch] = useReducer(reducer, 
         {
             floors:[], 
@@ -24,8 +26,9 @@ const Floors = () => {
     const [floorNumber, setFloorNumber] = useState(null)
 
     useEffect(()=>{
-        floorsHandler("get", dispatch, null, {}, hostelContext)
-    },[state.refreshFloors])
+        setHostelContext(hostel_id)
+        floorsHandler("get", dispatch, null, {}, hostel_id)
+    },[state.refreshFloors, hostel_id])
 
   return (
     <>
@@ -57,7 +60,7 @@ const Floors = () => {
 
             {/* Add Button */}
             <button onClick={()=>{
-            floorsHandler("add", null, null, {number:floorNumber}, hostelContext)
+            floorsHandler("add", null, null, {number:floorNumber}, hostel_id)
             dispatch({type:"add"})
             }} className="flex gap-2 justify-center items-center hover:bg-blue-700 p-3 rounded-md text-white bg-blueSecondary font-bold text-2xl">
             Add Floor<IoIosAddCircleOutline />

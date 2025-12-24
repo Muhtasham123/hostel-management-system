@@ -1,39 +1,39 @@
 import axios from "axios"
 import {toast} from "react-toastify"
 
-export const membersHandler = async(type, dispatch, memberId, body, filter, filterValue)=>{
+export const membersHandler = async(type, dispatch, memberId, body, filter, filterValue, hostel_id, room_id)=>{
     try {
         let res = null
         if(type === "get"){
-            res = await axios.get("http://localhost:4000/admin/members/getMembers",{withCredentials:true})
+            res = await axios.get(`http://localhost:4000/admin/members/${hostel_id}`,{withCredentials:true})
             dispatch({type, payload:res.data.data})
         }
         else if(type === "filter"){
-            res = await axios.get(`http://localhost:4000/admin/members/getMembers?${filter}=${filterValue}`,{withCredentials:true})
+            res = await axios.get(`http://localhost:4000/admin/members/${hostel_id}?${filter}=${filterValue}`,{withCredentials:true})
             dispatch({type:"get", payload:res.data.data})
         }
         else if(type === "get_rooms"){
-            res = await axios.get("http://localhost:4000/admin/rooms/getRoom",{withCredentials:true})
+            res = await axios.get(`http://localhost:4000/admin/rooms/${hostel_id}`,{withCredentials:true})
             dispatch({type, payload:res.data.data})
         }
         else if(type === "get_floors"){
-            res = await axios.get("http://localhost:4000/admin/floors/getFloor",{withCredentials:true})
+            res = await axios.get(`http://localhost:4000/admin/floors/${hostel_id}`,{withCredentials:true})
             dispatch({type, payload:res.data.data})
         }
         else if(type === "get_roles"){
-            res = await axios.get("http://localhost:4000/admin/roles/getRole",{withCredentials:true})
+            res = await axios.get(`http://localhost:4000/admin/roles/${hostel_id}`,{withCredentials:true})
             dispatch({type, payload:res.data.data})
         }
         else if(type === "add"){
-            res = await axios.post("http://localhost:4000/admin/members/addMember",body,{withCredentials:true})
+            res = await axios.post(`http://localhost:4000/admin/members/${hostel_id}/${room_id}`,body,{withCredentials:true})
             toast.success(res.data.message)
         }
         else if(type === "edit"){
-            res = await axios.put(`http://localhost:4000/admin/members/editMember/${memberId}`,body,{withCredentials:true})
+            res = await axios.put(`http://localhost:4000/admin/members/${hostel_id}/${room_id}/${memberId}`,body,{withCredentials:true})
             toast.success(res.data.message)
         }
         else if(type === "delete"){
-            res = await axios.delete(`http://localhost:4000/admin/members/deleteMember/${memberId}`,{withCredentials:true})
+            res = await axios.delete(`http://localhost:4000/admin/members/${hostel_id}/${memberId}`,{withCredentials:true})
             toast.success(res.data.message)
         }
 

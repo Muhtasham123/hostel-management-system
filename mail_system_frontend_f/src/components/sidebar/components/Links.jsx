@@ -36,7 +36,7 @@ export function SidebarLinks(props) {
         route.layout === "/rtl"
       ) {
         return (
-          <Link key={index} to={route.path !== "default" ? route.layout + "/" + route.path : `/admin/default/${hostelContext}`}>
+          <Link key={index} to={route.layout + "/" + route.path + (route.contexted ? `/${hostelContext}` : "")}>
             <div className="relative mb-3 flex hover:cursor-pointer">
               <li
                 className="my-[3px] flex cursor-pointer items-center px-8"

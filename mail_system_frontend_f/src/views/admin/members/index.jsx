@@ -2,7 +2,7 @@ import React from 'react'
 import ComplexTable from "./components/ComplexTable";
 import { columnsDataComplex } from "./variables/columnsData";
 import reducer from "./variables/reducer"
-import {useReducer, useEffect, useRef, useState} from "react"
+import {useReducer, useEffect, useRef, useState, useContext} from "react"
 import {membersHandler} from "./variables/handlers"
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { FaRegEdit } from "react-icons/fa";
@@ -11,9 +11,12 @@ import EditModel from "./components/EditModel"
 import DeleteModel from "./components/DeleteModel"
 import AddModel from "./components/AddModel"
 import ScheduelModel from "./components/ScheduelModel"
-import {Link} from "react-router-dom"
+import {Link, useParams} from "react-router-dom"
+import { context } from 'context';
 
 const Members = () => {
+    const {hostel_id} = useParams()
+    const {setHostelContext} = useContext(context)
     const refs = useRef([])
     const [recipients, setRecipients] = useState([])
     const [state, dispatch] = useReducer(reducer, 
@@ -29,6 +32,7 @@ const Members = () => {
             memberId:null,
             name:null,
             email:null,
+            phone:null,
             role: null,
             roomNumber:null,
             filterRole:"all",
@@ -36,14 +40,16 @@ const Members = () => {
             filterFloor:"all",
             refreshMembers:0,
             select:false,
+            pass:null
         })
 
     useEffect(()=>{
-        membersHandler("get", dispatch,null, {})
-        membersHandler("get_rooms", dispatch, null, {})
-        membersHandler("get_floors", dispatch, null, {})
+        setHostelContext(hostel_id)
+        membersHandler("get", dispatch,null, {}, null, null, hostel_id)
+        membersHandler("get_rooms", dispatch, null, {}, null, null, hostel_id)
+        membersHandler("get_floors", dispatch, null, {}, null, null, hostel_id)
         membersHandler("get_roles", dispatch, null, {})
-    },[state.refreshMembers])
+    },[state.refreshMembers, hostel_id])
 
   return (
     <>
@@ -114,7 +120,7 @@ const Members = () => {
                         dispatch({type:"change_filter_role", payload:e.target.value})
                         dispatch({ type: "change_filter_room", payload: "all" })
                         dispatch({ type: "change_filter_floor", payload: "all" })
-                        membersHandler("filter", dispatch, null, {}, "role", e.target.value)
+                        membersHandler("filter", dispatch, null, {}, "role", e.target.value, hostel_id)
                     }}>
                         <option value="all">all</option>
                         {
@@ -133,7 +139,7 @@ const Members = () => {
                         dispatch({ type: "change_filter_role", payload: "all" })
                         dispatch({ type: "change_filter_room", payload: e.target.value })
                         dispatch({ type: "change_filter_floor", payload: "all" })
-                        membersHandler("filter", dispatch, null, {}, "room", e.target.value)
+                        membersHandler("filter", dispatch, null, {}, "room", e.target.value, hostel_id)
                     }}>
                          <option value="all">all</option>
                          {
@@ -151,7 +157,7 @@ const Members = () => {
                         dispatch({ type: "change_filter_role", payload: "all" })
                         dispatch({ type: "change_filter_room", payload: "all" })
                         dispatch({ type: "change_filter_floor", payload: e.target.value })
-                        membersHandler("filter", dispatch, null, {}, "floor", e.target.value)
+                        membersHandler("filter", dispatch, null, {}, "floor", e.target.value, hostel_id)
                     }}>
                         <option value="all">all</option>
                         {

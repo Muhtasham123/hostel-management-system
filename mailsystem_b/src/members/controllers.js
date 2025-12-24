@@ -49,7 +49,7 @@ const addMember = async(req, res)=>{
             }
 
         }else{
-            [member] = await conn.query("INSERT INTO users(name, email, username, password, phone_no) VALUES (?, ?, NULL, NULL, ?)",[name, email, phone_no])
+            [member] = await conn.query("INSERT INTO users(email, username, password, account_type) VALUES (?, ?, NULL, 'customer')",[email, name])
             member_id = member.insertId
         }
 
@@ -229,31 +229,25 @@ const filterMembers = async(req, res)=>{
     try {
         const admin_id = req.user.id
         const {hostel_id} = req.params
-        let query = "SELECT u.id, hu.name, u.email, ro.role as role, r.number as room, f.number as floor FROM users u JOIN hostel_users hu ON u.id = hu.user_id JOIN users_rooms ur ON u.id = ur.user_id LEFT JOIN rooms r ON ur.room_id = r.id LEFT JOIN floors f ON r.floor_id = f.id JOIN roles ro ON hu.role_id = ro.id WHERE hu.hostel_id = ?"
+        let query = "SELECT u.id, hu.name, hu.status, u.email, ro.role as role, r.number as room, f.number as floor FROM users u JOIN hostel_users hu ON u.id = hu.user_id LEFT JOIN users_rooms ur ON u.id = ur.user_id LEFT JOIN rooms r ON ur.room_id = r.id LEFT JOIN floors f ON r.floor_id = f.id JOIN roles ro ON hu.role_id = ro.id WHERE hu.hostel_id = ? AND hu.user_id <> ?"
 
-        let values = [hostel_id]
+        let values = [hostel_id, admin_id]
 
         let {role, room, floor} = req.query
 
         if(role && role !== "all"){
-            let [role_id] = await pool.query("SELECT id FROM roles WHERE role = ?",[role])
-            role_id = role_id[0].id
-            query += " AND hu.role_id = ?"
-            values.push(role_id)
+            query += " AND ro.role = ?"
+            values.push(role)
         }
 
         if(room && room !== "all"){
-            let [room_id] = await pool.query("SELECT r.id FROM rooms r JOIN floors f ON r.floor_id = f.id WHERE r.number = ? AND f.hostel_id = ?",[room, hostel_id])
-            room_id = room_id[0].id
-            query += " AND r.id = ?"
-            values.push(room_id)
+            query += " AND r.number = ?"
+            values.push(room)
         }
 
         if(floor && floor !== "all"){
-            let [floor_id] = await pool.query("SELECT id FROM floors WHERE number = ? AND hostel_id = ?",[floor, hostel_id])
-            floor_id = floor_id[0].id
-            query += " AND f.id = ?"
-            values.push(floor_id)
+            query += " AND f.number = ?"
+            values.push(floor)
         }
 
         const [rows] = await pool.query(query, values)

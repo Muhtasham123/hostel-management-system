@@ -38,7 +38,7 @@ const addRoom = async(req, res)=>{
 const editRoom = async(req, res)=>{
     try {
         const admin_id = req.user.id
-        const {number, seats} = req.body
+        const {number, seats, floorNumber} = req.body
         const {room_id, floor_id, hostel_id} = req.params
 
         if(number < 0){
@@ -55,13 +55,19 @@ const editRoom = async(req, res)=>{
             return res.status(404).json({success:false, message:"Room does not exist"})
         }
 
+        const [floors] = await pool.query("SELECT * FROM floors WHERE number = ?",[floorNumber])
+
+        if(floors.length === 0){
+            return res.status(404).json({success:false, message:"Floor does not exist"})
+        }
+
         const [rooms] = await pool.query("SELECT * FROM rooms r JOIN floors f ON r.floor_id = f.id WHERE r.number = ? AND f.id = ? AND f.hostel_id = ? AND r.id <> ?", [number, floor_id, hostel_id, room_id])
 
         if(rooms.length !== 0){
             return res.status(400).json({success:false, message:"Room number already exists"})
         }
 
-        await pool.query("UPDATE rooms SET number = ?, seats = ?, floor_id = ? WHERE id = ?", [number, seats, floor_id, room_id])
+        await pool.query("UPDATE rooms SET number = ?, seats = ?, floor_id = ? WHERE id = ?", [number, seats, floors[0].id, room_id])
 
         return res.status(200).json({success:true, message:"Room updated"})
 

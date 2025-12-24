@@ -4,6 +4,6 @@ const  getRoles  = require("./controllers")
 
 const roleRouter = express.Router()
 
-roleRouter.get("/getRole",verifyToken, isAdmin, getRoles)
+roleRouter.get("/:hostel_id",verifyToken, isAdmin, getRoles)
 
 module.exports = roleRouter

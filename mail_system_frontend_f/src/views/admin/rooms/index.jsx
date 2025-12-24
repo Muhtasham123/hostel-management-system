@@ -2,14 +2,18 @@ import React from 'react'
 import ComplexTable from "./components/ComplexTable";
 import { columnsDataComplex } from "./variables/columnsData";
 import reducer from "./variables/reducer"
-import {useReducer, useEffect, useState} from "react"
+import {useReducer, useEffect, useContext} from "react"
 import {roomsHandler} from "./variables/handlers"
 import { IoIosAddCircleOutline } from "react-icons/io";
 import EditModel from "./components/EditModel"
 import DeleteModel from "./components/DeleteModel"
 import AddModel from "./components/AddModel"
+import {useParams} from "react-router-dom"
+import { context } from 'context';
 
 const Rooms = () => {
+    const {hostel_id} = useParams()
+    const {setHostelContext} = useContext(context)
     const [state, dispatch] = useReducer(reducer, 
         {
             rooms:[],
@@ -25,9 +29,10 @@ const Rooms = () => {
         })
 
     useEffect(()=>{
-        roomsHandler("get", dispatch, null, {})
-        roomsHandler("get_floors", dispatch, null, {})
-    },[state.refreshRooms])
+        setHostelContext(hostel_id)
+        roomsHandler("get", dispatch, null, {}, null, hostel_id)
+        roomsHandler("get_floors", dispatch, null, {}, null, hostel_id)
+    },[state.refreshRooms, hostel_id])
 
   return (
     <>
@@ -44,6 +49,7 @@ const Rooms = () => {
         <DeleteModel
             roomId={state.roomId}
             dispatch={dispatch}
+            state={state}
         />
         :
         <></>

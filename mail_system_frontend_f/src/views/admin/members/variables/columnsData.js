@@ -20,6 +20,10 @@ export const columnsDataComplex = [
     accessor: "role",
   },
   {
+    Header: "STATUS",
+    accessor: "status",
+  },
+  {
     Header: "FLOOR",
     accessor: "floor",
   },
