@@ -29,7 +29,7 @@ export const membersHandler = async(type, dispatch, memberId, body, filter, filt
             toast.success(res.data.message)
         }
         else if(type === "edit"){
-            res = await axios.put(`http://localhost:4000/admin/members/${hostel_id}/${room_id}/${memberId}`,body,{withCredentials:true})
+            res = await axios.put(`http://localhost:4000/admin/members/${hostel_id}/${memberId}`,body,{withCredentials:true})
             toast.success(res.data.message)
         }
         else if(type === "delete"){

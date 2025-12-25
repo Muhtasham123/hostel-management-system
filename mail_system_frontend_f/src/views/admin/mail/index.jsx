@@ -4,27 +4,34 @@ import {useParams, useNavigate, useLocation} from "react-router-dom"
 import {toast} from "react-toastify"
 import {useEffect, useState} from "react"
 import PasswordModel from './components/PasswordModel';
+import { context } from 'context';
+import {useContext} from "react"
 
 const Mail = () => {
     const [subject, setSubject] = useState("")
     const [body, setBody] = useState("")
     const [closeModel, setCloseModel] = useState(true)
-    let {recipients} = useParams()
+    let {recipients, hostel_id} = useParams()
     const navigate = useNavigate()
     const location = useLocation()
     const {type, typeValue} = location.state || {type:null, typeValue:null}
+    const {setHostelContext} = useContext(context)
+
 
     useEffect(()=>{
+        //setHostelContext(hostel_id)
         if(!recipients){
+            console.log("djskjdsk")
             toast.error("Select at least one memeber")
-            navigate("/admin/members")
+            navigate(`/admin/members/${hostel_id}`)
         }else {
             recipients = recipients.split(",")
             if(recipients.length === 0){
                 toast.error("Select at least one memeber")
-                navigate("/admin/members")
+                navigate(`/admin/members/${hostel_id}`)
             }
         }
+        console.log("recp")
     },[])
   return (
     <>

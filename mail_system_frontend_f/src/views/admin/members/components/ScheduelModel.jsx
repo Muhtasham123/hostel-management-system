@@ -1,9 +1,11 @@
 import React from 'react'
-import {useState, useEffect} from "react"
+import {useState, useEffect, useContext} from "react"
 import {toast} from "react-toastify"
 import {Link} from "react-router-dom"
+import { context } from 'context';
 
 const ScheduelModel = ({dispatch, state, recipients}) => {
+    const {hostelContext} = useContext(context)
     const [type, setType] = useState("monthly")
     const [typeValue, setTypeValue] = useState(1)
 
@@ -62,7 +64,7 @@ const ScheduelModel = ({dispatch, state, recipients}) => {
           </select>
 
           <div className="flex w-full justify-end gap-4 mt-4">
-            <Link to={`/admin/mail/${recipients.join(",")}`}
+            <Link to={`/admin/mail/${hostelContext}/${recipients.join(",")}`}
             state = {{type, typeValue}} className="hover:bg-blue-700 p-2 rounded-md text-white bg-blueSecondary">OK</Link>
 
               <button onClick={() => {

@@ -1,14 +1,17 @@
 import React from 'react'
 import axios from "axios"
 import {toast} from "react-toastify"
+import {context} from "context"
+import {useContext} from "react"
 
 const DeleteModel = ({ id, setDeleteModelOpen, setRefresh, refresh}) => {
-
+    const {hostelContext} = useContext(context)
     const handleDelete = async()=>{
         try {
-            const res = await axios.delete(`http://localhost:4000/admin/schedueledEmails/deleteSchedueledEmails?id=${id}`,{withCredentials:true})
+            const res = await axios.delete(`http://localhost:4000/admin/schedueledEmails/${hostelContext}/${id}`,{withCredentials:true})
 
-            toast.success(res.message)
+            toast.success(res.data.message)
+            setRefresh(refresh+1)
         } catch (error) {
             if(error.response){
                 toast.error(error.response.data.message)

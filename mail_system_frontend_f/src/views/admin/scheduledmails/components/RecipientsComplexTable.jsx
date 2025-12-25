@@ -1,6 +1,7 @@
 import React from "react";
 import Card from "components/card";
 import { IoMdCreate, IoMdTrash } from "react-icons/io";
+import { MdCancel, MdCheckCircle, MdOutlineError } from "react-icons/md";
 
 import {
   createColumnHelper,
@@ -54,6 +55,28 @@ export default function ComplexTable(props) {
               </p>
           ),
       }),
+
+      columnHelper.accessor("status", {
+            id: "status",
+            header: () => (
+              <p className="text-sm font-bold text-gray-600 dark:text-white">
+                STATUS
+              </p>
+            ),
+            cell: (info) => (
+              <div className="flex items-center">
+                {info.getValue() === "active" ? (
+                  <MdCheckCircle className="text-green-500 me-1 dark:text-green-300" />
+                ) : info.getValue() === "pending" ? (
+                  <MdOutlineError className="text-amber-500 me-1 dark:text-amber-300" />
+                ) : <MdCancel className="text-red-500 me-1 dark:text-red-300" />}
+                <p className="text-sm font-bold text-navy-700 dark:text-white">
+                  {info.getValue()}
+                </p>
+              </div>
+            ),
+          }),
+
       columnHelper.accessor("role", {
           id: "role",
           header: () => (

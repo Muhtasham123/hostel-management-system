@@ -5,8 +5,13 @@ import {toast} from "react-toastify"
 import ComplexTable from "./components/ComplexTable";
 import { columnsDataComplex } from "./variables/columnsData";
 import DeleteModel from './components/DeleteModel';
+import { context } from 'context';
+import { useContext } from 'react';
+import {useParams} from "react-router-dom"
 
 const ScheduledMails = () => {
+    const {hostel_id} = useParams()
+    const {setHostelContext} = useContext(context)
     const [mails, setMails] = useState([])
     const [deleteModelOpen, setDeleteModelOpen] = useState(false)
     const [deleteId, setDeleteId] = useState("")
@@ -14,7 +19,7 @@ const ScheduledMails = () => {
 
     const fetchMails = async()=>{
         try {
-            const res = await axios.get("http://localhost:4000/admin/schedueledEmails/getSchedueledEmails",{withCredentials:true})
+            const res = await axios.get(`http://localhost:4000/admin/schedueledEmails/${hostel_id}/all`,{withCredentials:true})
             setMails(res.data.data)
         } catch (error) {
             if(error.respons){
@@ -26,8 +31,9 @@ const ScheduledMails = () => {
     }
 
     useEffect(()=>{
+        setHostelContext(hostel_id)
         fetchMails()
-    },[refresh])
+    },[refresh, hostel_id])
 
   return (
     <>

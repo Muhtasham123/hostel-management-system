@@ -42,6 +42,7 @@ const reducer = (state, action)=>{
             name:action.payload.name,
             role:action.payload.role,
             email:action.payload.email,
+            phone:action.payload.phone_no,
             roomNumber:action.payload.room
         }
     }

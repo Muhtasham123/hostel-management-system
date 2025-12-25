@@ -71,10 +71,10 @@ export default function Admin(props) {
       }
     });
 
-    newRoutes.push(<Route path={`/mail/:recipients?`} element={<Mail/>} />)
-    newRoutes.push(<Route path={`/scheduleMail/:recipients?`} element={<Mail />} />)
-    newRoutes.push(<Route path={`/viewMail/:id?`} element={<ViewMail />} />)
-    newRoutes.push(<Route path={`/view/scheduled-mail/:id?`} element={<ViewScheduledMail />} />)
+    newRoutes.push(<Route path={`/mail/:hostel_id/:recipients?`} element={<Mail/>} />)
+    newRoutes.push(<Route path={`/scheduleMail/:hoste_id/:recipients?`} element={<Mail />} />)
+    newRoutes.push(<Route path={`/viewMail/:hostel_id/:id?`} element={<ViewMail />} />)
+    newRoutes.push(<Route path={`/view/scheduled-mail/:hostel_id/:id?`} element={<ViewScheduledMail />} />)
     newRoutes.push(<Route path={`/hostel/add`} element={<AddHostel reqType="post" data={null}/>} />)
 
     return newRoutes

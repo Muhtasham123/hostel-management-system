@@ -5,21 +5,26 @@ import axios from "axios"
 import {toast} from "react-toastify"
 import ComplexTable from "./components/ComplexTable";
 import { columnsDataComplex } from "./variables/columnsData";
+import { context } from 'context'
+import { useContext } from 'react'
 
 const ViewMail = () => {
-  const {id} = useParams()
+  const {id, hostel_id} = useParams()
+  const {setHostelContext} = useContext(context)
   const [email, setEmail] = useState({})
   const [recipients, setRecipients] = useState([])
 
   const fetchMail = async()=>{
     try {
-      const res = await axios.get(`http://localhost:4000/admin/emails/getEmails?id=${id}`,{withCredentials:true})
+      const res = await axios.get(`http://localhost:4000/admin/emails/${hostel_id}/${id}`,{withCredentials:true})
 
       const emailObj = res.data.data
+      console.log(emailObj)
       const names = emailObj.recipient_name.split(",")
       const emails = emailObj.recipient_email.split(",")
       const ids = emailObj.recipient_id.split(",")
       const roles = emailObj.recipient_role.split(",")
+      const status = emailObj.recipient_status.split(",")
 
       const recps = []
       for(let i = 0; i<ids.length; i++){
@@ -27,10 +32,12 @@ const ViewMail = () => {
           id:ids[i],
           name:names[i],
           email:emails[i],
-          role:roles[i]
+          status: status[i],
+          role:roles[i],  
         }
         recps.push(newRecp)
       }
+      console.log(recps)
 
       setEmail(emailObj)
       setRecipients(recps)
@@ -39,12 +46,14 @@ const ViewMail = () => {
       if(error.response){
         toast.error(error.response.data.message)
       }else{
+        console.log(error)
         toast.error("Failed to fetch email")
       }
     }
   }
 
   useEffect(()=>{
+    setHostelContext(hostel_id)
     fetchMail()
   },[])
 

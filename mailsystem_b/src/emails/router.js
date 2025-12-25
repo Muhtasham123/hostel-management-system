@@ -4,7 +4,7 @@ const { sendEmail, getEmails } = require("./controllers")
 
 const emailRouter = express.Router()
 
-emailRouter.post("/sendEmail",verifyToken, isAdmin, sendEmail)
-emailRouter.get("/getEmails",verifyToken, isAdmin, getEmails)
+emailRouter.post("/:hostel_id",verifyToken, isAdmin, sendEmail)
+emailRouter.get("/:hostel_id/:id",verifyToken, isAdmin, getEmails)
 
 module.exports = emailRouter

@@ -12,6 +12,10 @@ export const columnsDataComplex = [
     accessor: "email",
   },
   {
+    Header: "STATUS",
+    accessor: "status",
+  },
+  {
     Header: "ROLE",
     accessor: "role",
   },

@@ -1,18 +1,26 @@
 import React from 'react'
 import { membersHandler } from '../variables/handlers'
+import { context } from 'context'
+import {useContext} from "react"
 
 const EditModel = ({state, dispatch}) => {
+    const {hostelContext} = useContext(context)
   return (
       <div className={`fixed h-[100vh] w-[100vw] inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50`}>
           <form onSubmit={async (e) => {
               e.preventDefault()
+
+              const room = state.rooms.filter((r)=>Number(r.number) === Number(state.roomNumber))
+              const roomId = room[0].id
               await membersHandler("edit", null, state.memberId, 
                   {
                       name: state.name,
                       email: state.email,
                       role: state.role,
-                      room_no: state.roomNumber
-                  }
+                      room_no: state.roomNumber,
+                      room_id: roomId,
+                      phone_no: state.phone
+                  },null, null, hostelContext
               )
               dispatch({ type: "close_model" })
               dispatch({ type: "edit" })
@@ -29,6 +37,13 @@ const EditModel = ({state, dispatch}) => {
                   onChange={(e) => dispatch({ type: "change_email", payload: e.target.value })}
                   type="email"
                   placeholder='Enter email of member'
+                  className="rounded-xl border bg-white/0 p-3 text-sm outline-none w-full" />
+
+              <lable>Phone no</lable>
+              <input value={state.phone}
+                  onChange={(e) => dispatch({ type: "change_phone", payload: e.target.value })}
+                  type="text"
+                  placeholder='Enter phone number'
                   className="rounded-xl border bg-white/0 p-3 text-sm outline-none w-full" />
 
               <lable>Select role</lable>

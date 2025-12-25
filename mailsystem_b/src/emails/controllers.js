@@ -13,8 +13,6 @@ const sendEmail = async(req, res)=>{
 
         recipients = recipients.split(",")
 
-        console.log(recipients)
-
         if(recipients.length === 0 || !subject || !body || !appPassword){
             return res.status(400).json({success:false, message:"All fields are required"})
         }
@@ -72,16 +70,16 @@ const sendEmail = async(req, res)=>{
 // GET emails
 const getEmails = async(req, res)=>{
     try {
-        const {id} = req.query
+        const {id, hostel_id} = req.params
         const admin_id = req.user.id
 
-        if(id){
-            const [email] = await pool.query("SELECT e.id,e.subject,e.body, e.admin_id, e.sent_at, GROUP_CONCAT(u.name SEPARATOR ', ') AS recipient_name, GROUP_CONCAT(u.id SEPARATOR ', ') AS recipient_id, GROUP_CONCAT(u.email SEPARATOR ', ') AS recipient_email, GROUP_CONCAT(r.role SEPARATOR ', ') AS recipient_role FROM emails e JOIN email_users eu ON e.id = eu.email_id JOIN users u ON eu.user_id = u.id JOIN roles r ON u.role_id = r.id WHERE e.admin_id = ? AND e.id = ? GROUP BY e.id ORDER BY e.id DESC",[admin_id, id])
+        if(id !== "all"){
+            const [email] = await pool.query("SELECT e.id, e.subject, e.body, e.sent_at,GROUP_CONCAT(hu.name SEPARATOR ',') AS recipient_name, GROUP_CONCAT(hu.user_id SEPARATOR ',') AS recipient_id, GROUP_CONCAT(u.email SEPARATOR ',') AS recipient_email, GROUP_CONCAT(r.role SEPARATOR ',') AS recipient_role, GROUP_CONCAT(hu.status SEPARATOR ',') AS recipient_status FROM emails e JOIN email_users eu ON e.id = eu.email_id JOIN users u ON eu.user_id = u.id JOIN hostel_users hu ON u.id = hu.user_id AND hu.hostel_id = ? JOIN roles r ON hu.role_id = r.id WHERE e.admin_id = ? AND e.id = ? GROUP BY e.id",[hostel_id, admin_id, id])
 
             return res.status(200).json({success:true, message:"Email fetched", data:email[0]})
         }
 
-        const [emails] = await pool.query("SELECT e.id,e.subject,e.body, e.admin_id, e.sent_at, GROUP_CONCAT(u.name SEPARATOR ', ') AS recipients FROM emails e JOIN email_users eu ON e.id = eu.email_id JOIN users u ON eu.user_id = u.id WHERE e.admin_id = ? GROUP BY e.id ORDER BY e.id DESC",[admin_id])
+        const [emails] = await pool.query("SELECT e.id, e.subject, e.body, e.sent_at,GROUP_CONCAT(DISTINCT hu.name) AS recipients FROM emails e JOIN email_users eu ON e.id = eu.email_id JOIN hostel_users hu ON eu.user_id = hu.user_id AND hu.hostel_id = ?WHERE e.admin_id = ? GROUP BY e.id ORDER BY e.id DESC",[hostel_id, admin_id])
 
         return res.status(200).json({success:true, message:"Emails fetched", data:emails})
         

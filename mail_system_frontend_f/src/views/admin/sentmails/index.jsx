@@ -2,13 +2,19 @@ import React from 'react'
 import {useState, useEffect} from "react"
 import axios from "axios"
 import {toast} from "react-toastify"
-import {Link} from "react-router-dom"
+import {Link, useParams} from "react-router-dom"
+import { context } from 'context'
+import { useContext } from 'react'
+
 const SentMails = () => {
+    const {hostel_id} = useParams()
+    const {setHostelContext} = useContext(context)
+
     const [mails, setMails] = useState([])
 
     const fetchMails = async()=>{
         try {
-            const res = await axios.get("http://localhost:4000/admin/emails/getEmails",{withCredentials:true})
+            const res = await axios.get(`http://localhost:4000/admin/emails/${hostel_id}/all`,{withCredentials:true})
             setMails(res.data.data)
         } catch (error) {
             if(error.response){
@@ -20,6 +26,7 @@ const SentMails = () => {
     }
 
     useEffect(()=>{
+        setHostelContext(hostel_id)
         fetchMails()
     },[])
 
@@ -37,7 +44,7 @@ const SentMails = () => {
                 const hours = date.getHours()
                 const minutes = date.getMinutes()
 
-                return <Link to = {`/admin/viewMail/${m.id}`} className = "p-4 border-b-2 transition-all hover:bg-gray-100">
+                return <Link to = {`/admin/viewMail/${hostel_id}/${m.id}`} className = "p-4 border-b-2 transition-all hover:bg-gray-100">
                     <div className="flex justify-between">
                         <h3 className= "font-bold text-large truncate overflow-hidden whitespace-nowrap text-ellipsis">{m.subject}</h3>
 

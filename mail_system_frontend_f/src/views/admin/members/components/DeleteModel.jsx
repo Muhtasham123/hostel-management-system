@@ -1,7 +1,10 @@
 import React from 'react'
 import { membersHandler } from '../variables/handlers'
+import { context } from 'context'
+import {useContext} from "react"
 
-const DeleteModel = ({ roomId, dispatch}) => {
+const DeleteModel = ({ memberId, dispatch}) => {
+  const {hostelContext} = useContext(context)
   return (
       <div className={`fixed h-[100vh] w-[100vw] inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50`}>
           <div className="bg-white p-6 rounded-lg w-[40%] h-[30%]">
@@ -9,7 +12,7 @@ const DeleteModel = ({ roomId, dispatch}) => {
 
               <div className="flex w-full justify-end gap-4 mt-4">
                   <button onClick = {async()=>{
-                    await membersHandler("delete", dispatch, roomId)
+                    await membersHandler("delete", dispatch, memberId, {}, null, null, hostelContext)
                     dispatch({ type: "delete" })
                     dispatch({type:"close_delete_model"})
                   }}className="hover:bg-blue-700 p-2 rounded-md text-white bg-blueSecondary">Yes</button>

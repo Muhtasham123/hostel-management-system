@@ -3,6 +3,11 @@ import reducer from "./variables/reducer"
 import { hostelHandler } from "./variables/handlers"
 import {Link} from "react-router-dom"
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { IoLocationSharp } from "react-icons/io5";
+import { FaPhone } from "react-icons/fa6";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+import { MdOutlineOpenInNew } from "react-icons/md";
 
 const Hostels = () => {
     const [state, dispatch] = useReducer(reducer, 
@@ -42,12 +47,17 @@ const Hostels = () => {
                 <div>
                     <h1 className = "text-2xl mt-4 font-bold text-gray-700">{h.name.toUpperCase()}</h1>
                 </div>
+
+                <div className="flex items-center gap-2 text-gray-700 m-2 pl-4 truncate overflow-hidden whitespace-nowrap text-ellipsis"><IoLocationSharp className = "text-red-500 text-2xl"/>{h.location}</div>
+
+                <div className="flex items-center gap-2 text-gray-700 pl-4 m-2"><FaPhone className="text-blue-500 text-2xl" />{h.contact}</div>
+
                 <div className = "flex justify-end gap-4 w-full mt-5">
-                    <button className = "p-2 rounded-md bg-red-500 text-white">DELETE</button>
+                    <button className="p-2 rounded-md bg-red-500 text-white text-2xl hover:bg-red-700"><MdDelete /></button>
 
-                    <Link to="/admin/hostel/edit" className="p-2 rounded-md bg-yellow-500 text-white">EDIT</Link>
+                    <Link to="/admin/hostel/edit" className="p-2 rounded-md bg-yellow-500 text-white text-2xl hover:bg-yellow-700"><FaEdit /></Link>
 
-                    <Link to={`/admin/default/${h.id}`} className="p-2 rounded-md bg-green-500 text-white">VIEW</Link>
+                    <Link to={`/admin/default/${h.id}`} className="p-2 rounded-md bg-green-500 text-white text-2xl hover:bg-green-700"><MdOutlineOpenInNew /></Link>
                 </div>
             </div>
         })

@@ -68,8 +68,6 @@ const isAdmin = async(req, res, next)=>{
 
         let [role] = await pool.query("SELECT role FROM roles r JOIN hostel_users hu ON r.id = hu.role_id WHERE hu.user_id = ?",[user_id])
 
-        console.log(role)
-
         role = role[0].role
 
         if(role !== "admin"){

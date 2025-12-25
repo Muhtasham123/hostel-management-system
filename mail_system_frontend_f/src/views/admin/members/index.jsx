@@ -64,7 +64,7 @@ const Members = () => {
 
     {state.isDeleteModelOpen ?
         <DeleteModel
-            roomId={state.memberId}
+            memberId={state.memberId}
             dispatch={dispatch}
         />
         :
@@ -100,7 +100,7 @@ const Members = () => {
 
                 </button>
 
-                <Link to = {`/admin/mail/${recipients.join(",")}`} className="flex gap-2 justify-center items-center hover:bg-blue-700 p-3 rounded-md text-white bg-blueSecondary font-bold text-2xl">
+                    <Link to={`/admin/mail/${hostel_id}/${recipients.join(",")}`} className="flex gap-2 justify-center items-center hover:bg-blue-700 p-3 rounded-md text-white bg-blueSecondary font-bold text-2xl">
                     New Mail<FaRegEdit />
                 </Link>
 

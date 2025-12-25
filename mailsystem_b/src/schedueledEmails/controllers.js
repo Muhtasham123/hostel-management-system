@@ -9,6 +9,7 @@ const scheduelingEmail = async(req, res)=>{
     try {
         await connection.beginTransaction()
 
+        const {hoatel_id} = req.params
         let {recipients, subject, body, appPassword, scheduelingTime, type} = req.body
         const admin_id = req.user.id
         let [admin_email] = await pool.query("SELECT email FROM users WHERE id = ?", [admin_id])
@@ -59,14 +60,14 @@ const scheduelingEmail = async(req, res)=>{
 const getSchedueledEmails = async(req, res)=>{
     try {
         const admin_id = req.user.id
-        const {id} = req.query
+        const {id, hostel_id} = req.params
 
-        if(id){
-            const [email] = await pool.query("SELECT e.subject,e.body, GROUP_CONCAT(u.name SEPARATOR ', ') AS recipient_name, GROUP_CONCAT(u.email SEPARATOR ', ') AS recipient_email, GROUP_CONCAT(u.id SEPARATOR ', ') as recipient_id, GROUP_CONCAT(r.role SEPARATOR ', ') as recipient_role FROM schedueled_emails e JOIN schedueled_email_users eu ON e.id = eu.email_id JOIN users u ON eu.user_id = u.id JOIN roles r ON u.role_id = r.id WHERE e.admin_id = ? AND e.id = ? GROUP BY e.id",[admin_id, id])
+        if(id !== "all"){
+            const [email] = await pool.query("SELECT e.subject,e.body, GROUP_CONCAT(hu.name SEPARATOR ',') AS recipient_name, GROUP_CONCAT(u.email SEPARATOR ',') AS recipient_email, GROUP_CONCAT(u.id SEPARATOR ',') as recipient_id, GROUP_CONCAT(r.role SEPARATOR ',') as recipient_role, GROUP_CONCAT(hu.status SEPARATOR ',') AS recipient_status FROM schedueled_emails e JOIN schedueled_email_users eu ON e.id = eu.email_id JOIN users u ON eu.user_id = u.id JOIN hostel_users hu ON u.id = hu.user_id AND hu.hostel_id = ? JOIN roles r ON hu.role_id = r.id WHERE e.admin_id = ? AND e.id = ? GROUP BY e.id",[hostel_id, admin_id, id])
 
             return res.status(200).json({success:true, message:"Email fetched", data:email[0]})
         }
-        const [emails] = await pool.query("SELECT e.id,e.subject,e.body, e.admin_id,e.schedueled_at, e.status, e.type, e.day, e.date, e.month, GROUP_CONCAT(u.name SEPARATOR ',') AS recipients FROM schedueled_emails e JOIN schedueled_email_users eu ON e.id = eu.email_id JOIN users u ON eu.user_id = u.id WHERE e.admin_id = ? GROUP BY e.id ORDER BY e.id DESC",[admin_id])
+        const [emails] = await pool.query("SELECT e.id,e.subject,e.body, e.admin_id,e.schedueled_at, e.status, e.type, e.day, e.date, e.month, GROUP_CONCAT(hu.name SEPARATOR ',') AS recipients FROM schedueled_emails e JOIN schedueled_email_users eu ON e.id = eu.email_id JOIN hostel_users hu ON eu.user_id = hu.user_id AND hostel_id = ? WHERE e.admin_id = ? GROUP BY e.id ORDER BY e.id DESC",[hostel_id, admin_id])
 
         return res.status(200).json({success:true, message:"Emails fetched", data:emails})
         
@@ -78,7 +79,7 @@ const getSchedueledEmails = async(req, res)=>{
 
 const deleteScheduledEmail = async(req, res)=>{
     try {
-        const {id} = req.query
+        const {id, hostel_id} = req.params
 
         const [emails] = await pool.query("SELECT * FROM schedueled_emails WHERE id = ?",[id])
 

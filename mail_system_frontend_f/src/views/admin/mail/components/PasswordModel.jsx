@@ -1,12 +1,14 @@
 import React from 'react'
-import {useState} from "react"
+import {useState, useContext} from "react"
 import axios from "axios"
 import {toast} from "react-toastify"
 import { useNavigate } from 'react-router-dom'
+import { context } from 'context'
 
 const PasswordModel = ({setCloseModel, subject, body, recipients, type, typeValue}) => {
     const [pass, setPass] = useState("")
     const navigate = useNavigate()
+    const {hostelContext} = useContext(context)
 
     const handelSubmit = async(e)=>{
         e.preventDefault()
@@ -32,13 +34,13 @@ const PasswordModel = ({setCloseModel, subject, body, recipients, type, typeValu
 
         try {
             if(!type && !typeValue){
-                const res = await axios.post("http://localhost:4000/admin/emails/sendEmail",emailObject,{withCredentials:true})
+                const res = await axios.post(`http://localhost:4000/admin/emails/${hostelContext}`,emailObject,{withCredentials:true})
                 toast.success(res.data.message)
-                navigate("/admin/sent")
+                navigate(`/admin/sent/${hostelContext}`)
             }else{
-                const res = await axios.post("http://localhost:4000/admin/SchedueledEmails/scheduelEmail", emailObject, { withCredentials: true })
+                const res = await axios.post(`http://localhost:4000/admin/SchedueledEmails/${hostelContext}`, emailObject, { withCredentials: true })
                 toast.success(res.data.message)
-                navigate("/admin/scheduled-mails")
+                navigate(`/admin/scheduled-mails/${hostelContext}`)
             }
         } catch (error) {
             if(error.response){

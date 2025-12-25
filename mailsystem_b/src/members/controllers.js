@@ -47,6 +47,7 @@ const addMember = async(req, res)=>{
             if(existing.length){
                 return res.status(400).json({success:false, message:"Member already exists", data:member[0]})
             }
+            member_id = member[0].id
 
         }else{
             [member] = await conn.query("INSERT INTO users(email, username, password, account_type) VALUES (?, ?, NULL, 'customer')",[email, name])
@@ -110,12 +111,20 @@ const editMember = async(req, res)=>{
     await conn.beginTransaction()
     try {
         const admin_id = req.user.id
-        const {hostel_id, room_id, member_id} = req.params
-        let {name, role, phone_no} = req.body
+        const {hostel_id, member_id} = req.params
+        let {name, role, phone_no, room_id} = req.body
 
         const [member] = await conn.query("SELECT * FROM users WHERE id = ?",[member_id])
-        const [prevRoom] = await conn.query("SELECT * FROM rooms r JOIN users_rooms ur ON r.id = ur.room_id WHERE ur.user_id = ?",[member_id])
-        const prevRoomId = prevRoom[0].id
+        let [member_role] = await conn.query("SELECT * FROM roles r JOIN hostel_users hu ON r.id = hu.role_id WHERE hu.user_id = ?", [member_id])
+
+        member_role = member_role[0].role
+
+        let prevRoomId = null
+        let prevRoom = null
+        if(member_role === "resident"){
+            [prevRoom] = await conn.query("SELECT * FROM rooms r JOIN users_rooms ur ON r.id = ur.room_id WHERE ur.user_id = ?",[member_id])
+            prevRoomId = prevRoom[0].room_id
+        }
 
         if(member.length === 0){
             return res.status(404).json({success:false, message:"Member does not exist"})
@@ -131,7 +140,7 @@ const editMember = async(req, res)=>{
 
         name = sanitizeHtml(name).trim()
 
-        let [role_id] = await conn.query("SELECT id FROM roles WHERE role = ?",[role])
+        let [role_id] = await conn.query("SELECT * FROM roles WHERE role = ?",[role])
         role_id = role_id[0].id
 
         await conn.query("UPDATE hostel_users SET role_id = ?, name = ?, phone_no = ? WHERE hostel_id = ? AND user_id = ?",[role_id, name, phone_no, hostel_id, member_id])
@@ -141,7 +150,7 @@ const editMember = async(req, res)=>{
             const [prevCountRows] = await conn.query("SELECT COUNT(*) AS fill_count FROM users_rooms WHERE room_id = ?", [prevRoomId])
 
             if(prevCountRows[0].fill_count < prevRoom[0].seats){
-                await conn.query("UPDATE rooms SET status = 'Available' WHERE id = ?", [prevRoomId])
+                await conn.query("UPDATE rooms SET status = ? WHERE id = ?", ['Available', prevRoomId])
             }
         }
 
@@ -151,14 +160,22 @@ const editMember = async(req, res)=>{
                 return res.status(400).json({success:false, message:"Room not found"})
             }
 
-            await conn.query("UPDATE users_rooms SET room_id = ? WHERE user_id = ?",[room_id, member_id])
+            if(prevRoom){
+                await conn.query("UPDATE users_rooms SET room_id = ? WHERE user_id = ?",[room_id, member_id])
+            }else{
+                await conn.query("INSERT INTO users_rooms(user_id, room_id) VALUES(?, ?)",[member_id, room_id])
+            }
 
             const [count] = await conn.query("SELECT COUNT(*) AS fill_count FROM users_rooms WHERE room_id = ?",[room_id])
 
-           const [prevCountRows] = await conn.query("SELECT COUNT(*) AS fill_count FROM users_rooms WHERE room_id = ?", [prevRoomId])
+           if(prevRoom){
+                const [prevCountRows] = await conn.query("SELECT COUNT(*) AS fill_count FROM users_rooms WHERE room_id = ?", [prevRoomId])
 
-           if(prevCountRows[0].fill_count < prevRoom[0].seats){
-                await conn.query("UPDATE rooms SET status = 'Available' WHERE id = ?", [prevRoomId])
+                if(prevCountRows[0].fill_count < prevRoom[0].seats){
+                     console.log(prevRoom[0])
+
+                     await conn.query("UPDATE rooms SET status = ? WHERE id = ?", ["Available", prevRoomId])
+                 }
             }
 
            if(count[0].fill_count >= room[0].seats){
@@ -171,7 +188,7 @@ const editMember = async(req, res)=>{
 
     } catch (error) {
         await conn.rollback()
-        console.log("Error in edit member : " + error.message)
+        console.log("Error in edit member : " + error)
         res.status(500).json({success:false, message:"Internal server error"})
 
     }finally{
@@ -189,9 +206,10 @@ const deleteMember = async(req, res)=>{
         const admin_id = req.user.id
 
         const [member] = await conn.query("SELECT * FROM users WHERE id = ?",[member_id])
-        const [role] = await conn.query("SELECT role FROM roles WHERE id = (SELECT role_id FROM hostel_users WHERE user_id = ?)",[member_id])
+        const [role] = await conn.query("SELECT role FROM roles WHERE id = (SELECT role_id FROM hostel_users WHERE user_id = ? AND hostel_id = ?)",[member_id, hostel_id])
 
         if(member.length === 0){
+            await conn.rollback()
             return res.status(404).json({success:false, message:"Member does not exist"})
         }
 
@@ -203,10 +221,10 @@ const deleteMember = async(req, res)=>{
 
             await conn.query("DELETE FROM users_rooms WHERE user_id = ?",[member_id])
 
-            const [prevCountRows] = await conn.query("SELECT COUNT(*) AS fill_count FROM users_rooms WHERE room_id = ?", [prevRoomId])
+            const [prevCountRows] = await conn.query("SELECT COUNT(room_id) AS fill_count FROM users_rooms WHERE room_id = ?", [prevRoomId])
 
            if(prevCountRows[0].fill_count < prevRoom[0].seats){
-                await conn.query("UPDATE rooms SET status = 'Available' WHERE id = ?", [prevRoomId])
+                await conn.query("UPDATE rooms SET status = ? WHERE id = ?", ['Available', prevRoomId])
             }
             
         }
@@ -229,7 +247,7 @@ const filterMembers = async(req, res)=>{
     try {
         const admin_id = req.user.id
         const {hostel_id} = req.params
-        let query = "SELECT u.id, hu.name, hu.status, u.email, ro.role as role, r.number as room, f.number as floor FROM users u JOIN hostel_users hu ON u.id = hu.user_id LEFT JOIN users_rooms ur ON u.id = ur.user_id LEFT JOIN rooms r ON ur.room_id = r.id LEFT JOIN floors f ON r.floor_id = f.id JOIN roles ro ON hu.role_id = ro.id WHERE hu.hostel_id = ? AND hu.user_id <> ?"
+        let query = "SELECT u.id, hu.name, hu.status, u.email, hu.phone_no, ro.role as role, r.number as room, f.number as floor FROM users u JOIN hostel_users hu ON u.id = hu.user_id LEFT JOIN users_rooms ur ON u.id = ur.user_id LEFT JOIN rooms r ON ur.room_id = r.id LEFT JOIN floors f ON r.floor_id = f.id JOIN roles ro ON hu.role_id = ro.id WHERE hu.hostel_id = ? AND hu.user_id <> ?"
 
         let values = [hostel_id, admin_id]
 

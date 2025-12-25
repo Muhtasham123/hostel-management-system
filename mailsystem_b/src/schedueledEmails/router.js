@@ -4,8 +4,8 @@ const { scheduelingEmail, getSchedueledEmails, deleteScheduledEmail } = require(
 
 const schedueledEmailRouter = express.Router()
 
-schedueledEmailRouter.post("/scheduelEmail",verifyToken, isAdmin, scheduelingEmail)
-schedueledEmailRouter.get("/getSchedueledEmails",verifyToken, isAdmin, getSchedueledEmails)
-schedueledEmailRouter.delete("/deleteSchedueledEmails",verifyToken, isAdmin, deleteScheduledEmail)
+schedueledEmailRouter.post("/:hostel_id",verifyToken, isAdmin, scheduelingEmail)
+schedueledEmailRouter.get("/:hostel_id/:id",verifyToken, isAdmin, getSchedueledEmails)
+schedueledEmailRouter.delete("/:hostel_id/:id",verifyToken, isAdmin, deleteScheduledEmail)
 
 module.exports = schedueledEmailRouter

@@ -12,6 +12,8 @@ import {
 } from "@tanstack/react-table";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { MdCheckCircle, MdOutlineError } from "react-icons/md";
+import {context} from "context"
+import {useContext} from "react"
 
 
 
@@ -19,7 +21,8 @@ const columnHelper = createColumnHelper();
 
 // const columns = columnsDataCheck;
 export default function ComplexTable(props) {
-  const { tableData, setDeleteId, setDeleteModelOpen } = props;
+  const {hostelContext} = useContext(context)
+  const { tableData, setDeleteId, setDeleteModelOpen} = props;
   const [sorting, setSorting] = React.useState([]);
   const columns = [
     columnHelper.accessor("id", {
@@ -138,7 +141,7 @@ export default function ComplexTable(props) {
               const mail = row.original;
               return (
                   <Link
-                      to = {`/admin/view/scheduled-mail/${mail.id}`}
+                      to = {`/admin/view/scheduled-mail/${hostelContext}/${mail.id}`}
                       className="p-2 bg-blue-500 w-8 text-white rounded hover:bg-blue-600 flex items-center justify-center"
                   >
                       <MdOutlineOpenInNew />
