@@ -39,4 +39,8 @@ export const columnsDataComplex = [
     Header: "DELETE",
     accessor: "delete",
   },
+  {
+    Header: "UPDATE STATUS",
+    accessor: "update status",
+  },
 ];

@@ -6,7 +6,7 @@ const memberRouter = express.Router()
 
 memberRouter.post("/:hostel_id/:room_id",verifyToken, isAdmin, addMember)
 memberRouter.put("/:hostel_id/:member_id",verifyToken, isAdmin, editMember)
-memberRouter.put("/inactive/:hostel_id/:member_id",verifyToken, isAdmin, inactive)
+memberRouter.put("/update_status/:hostel_id/:member_id",verifyToken, isAdmin, inactive)
 memberRouter.delete("/:hostel_id/:member_id",verifyToken, isAdmin, deleteMember)
 memberRouter.get("/:hostel_id",verifyToken, isAdmin, filterMembers)
 

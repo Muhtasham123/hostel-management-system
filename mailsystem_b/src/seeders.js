@@ -156,6 +156,7 @@ const schemas = {
         (
             id INT AUTO_INCREMENT PRIMARY KEY,
             token VARCHAR(255) NOT NULL UNIQUE,
+            status ENUM('used', 'fresh') DEFAULT 'fresh',
             user_id INT,
             hostel_id INT,
             role_id INT,

@@ -11,11 +11,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import { membersHandler } from "../variables/handlers";
+import { context } from "context";
+import { useContext } from "react"
+
 const columnHelper = createColumnHelper();
 
 // const columns = columnsDataCheck;
 export default function ComplexTable(props) {
-  const { tableData, dispatch, checkRefs, state, recipients, setRecipients } = props;
+  const {hostelContext} = useContext(context)
+  const { tableData, dispatch, checkRefs, recipients, setRecipients } = props;
   const [sorting, setSorting] = React.useState([]);
   const columns = [
      columnHelper.display({
@@ -216,6 +221,40 @@ export default function ComplexTable(props) {
               );
           },
       }),
+
+    columnHelper.display({
+      id: "delete",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          UPDATE STATUS
+        </p>
+      ),
+      cell: ({ row }) => {
+        const member = row.original;
+        const body = { status: member.status === "active" ? "inactive" : "active" }
+        return (
+          <button
+            onClick={() =>{ 
+              membersHandler("update_status", null, member.id, body, null, null, hostelContext)
+              dispatch({type:"update_status"})
+            }}
+            
+            disabled = {member.status === "pending"}
+            className={`p-2 ${member.status === "active" ? "bg-green-200 hover:bg-green-400" : "bg-red-200 hover:bg-red-400"}  rounded  flex items-center justify-center disabled:bg-gray-200 disabled:text-gray-700 disabled:cursor-not-allowed`}
+          >
+            {
+              member.status === "active" ?
+              "Inactivate"
+              :
+              member.status === "inactive" ?
+              "Activate"
+              :
+              "N / A"
+            }
+          </button>
+        );
+      },
+    }),
   ]; // eslint-disable-next-line
   const table = useReactTable({
     data:tableData,

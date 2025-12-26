@@ -23,6 +23,9 @@ const reducer = (state, action)=>{
     else if(action.type === "delete"){
         return {...state, refreshMembers:state.refreshMembers + 1}
     }
+     else if(action.type === "update_status"){
+        return {...state, refreshMembers:state.refreshMembers + 1}
+    }
     
     else if(action.type === "close_model"){
         return {...state, isModelOpen:false}

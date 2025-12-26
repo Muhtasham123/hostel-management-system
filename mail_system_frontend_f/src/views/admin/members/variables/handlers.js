@@ -36,6 +36,10 @@ export const membersHandler = async(type, dispatch, memberId, body, filter, filt
             res = await axios.delete(`http://localhost:4000/admin/members/${hostel_id}/${memberId}`,{withCredentials:true})
             toast.success(res.data.message)
         }
+        else if(type === "update_status"){
+            res = await axios.put(`http://localhost:4000/admin/members/update_status/${hostel_id}/${memberId}`,body, {withCredentials:true})
+            toast.success(res.data.message)
+        }
 
         console.log(res.data.message)
     } catch (error) {

@@ -217,7 +217,7 @@ const deleteMember = async(req, res)=>{
 
         if(role[0].role === "resident"){
             const [prevRoom] = await conn.query("SELECT * FROM rooms r JOIN users_rooms ur ON r.id = ur.room_id WHERE ur.user_id = ?",[member_id])
-            const prevRoomId = prevRoom[0].id
+            const prevRoomId = prevRoom[0].room_id
 
             await conn.query("DELETE FROM users_rooms WHERE user_id = ?",[member_id])
 
@@ -284,6 +284,7 @@ const filterMembers = async(req, res)=>{
 const inactive = async(req, res)=>{
     try {
         const {hostel_id, member_id} = req.params
+        const {status} = req.body
 
         if(!hostel_id || !member_id){
             return res.status(400).json({success:false, message:"Missing contexts"})
@@ -295,9 +296,9 @@ const inactive = async(req, res)=>{
         if(hostel.length === 0 || member.length === 0){
             return res.status(404).json({success:false, message:"Invalid contexts"})
         }
-        await pool.query("UPDATE hostel_users SET status = 'inactive' WHERE user_id = ? AND hostel_id = ?",[member_id, hostel_id])
+        await pool.query("UPDATE hostel_users SET status = ? WHERE user_id = ? AND hostel_id = ?",[status, member_id, hostel_id])
 
-        return res.status(200).json({success:true, message:"Member marked as inactive"})
+        return res.status(200).json({success:true, message:"Member marked as " + status})
 
     } catch (error) {
         console.log("Error in inactive  : " + error.message)

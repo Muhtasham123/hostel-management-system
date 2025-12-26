@@ -14,6 +14,7 @@ const dashboardRouter = require("./dashboard/routes")
 const { hostelRouterAdmin, hostelRouterCustomer } = require("./hostels/router")
 require("./schedueledEmails/cron")
 const cloudinary = require("./cloudinaryConfig");
+const joinRouter = require("./join/router")
 
 
 const app = express()
@@ -36,6 +37,7 @@ app.use("/admin/schedueledEmails", schedueledEmailRouter)
 app.use("/admin/dashboard", dashboardRouter)
 app.use("/admin/hostels", hostelRouterAdmin)
 app.use("/customer/hostels", hostelRouterCustomer)
+app.use("/join-hostel", joinRouter)
 
 
 const port = 4000
