@@ -1,0 +1,55 @@
+import axios from "axios"
+import {toast} from "react-toastify"
+
+export const membersHandler = async(type, dispatch, memberId, body, filter, filterValue, hostel_id, room_id)=>{
+    try {
+        let res = null
+        if(type === "get"){
+            res = await axios.get(`http://localhost:4000/admin/members/${hostel_id}`,{withCredentials:true})
+            dispatch({type, payload:res.data.data})
+        }
+        else if(type === "filter"){
+            res = await axios.get(`http://localhost:4000/admin/members/${hostel_id}?${filter}=${filterValue}`,{withCredentials:true})
+            dispatch({type:"get", payload:res.data.data})
+        }
+        else if(type === "get_rooms"){
+            res = await axios.get(`http://localhost:4000/admin/rooms/${hostel_id}`,{withCredentials:true})
+            console.log(res.data.data)
+            dispatch({type, payload:res.data.data})
+        }
+        else if(type === "get_floors"){
+            res = await axios.get(`http://localhost:4000/admin/floors/${hostel_id}`,{withCredentials:true})
+            dispatch({type, payload:res.data.data})
+        }
+        else if(type === "get_roles"){
+            res = await axios.get(`http://localhost:4000/admin/roles/${hostel_id}`,{withCredentials:true})
+            dispatch({type, payload:res.data.data})
+        }
+        else if(type === "add"){
+            res = await axios.post(`http://localhost:4000/admin/members/${hostel_id}/${room_id}`,body,{withCredentials:true})
+            toast.success(res.data.message)
+        }
+        else if(type === "edit"){
+            res = await axios.put(`http://localhost:4000/admin/members/${hostel_id}/${memberId}`,body,{withCredentials:true})
+            toast.success(res.data.message)
+        }
+        else if(type === "delete"){
+            res = await axios.delete(`http://localhost:4000/admin/members/${hostel_id}/${memberId}`,{withCredentials:true})
+            toast.success(res.data.message)
+        }
+        else if(type === "update_status"){
+            res = await axios.put(`http://localhost:4000/admin/members/update_status/${hostel_id}/${memberId}`,body, {withCredentials:true})
+            toast.success(res.data.message)
+        }
+
+        console.log(res.data.message)
+    } catch (error) {
+        if(error.response){
+            console.log(error.response.data.message)
+            toast.error(error.response.data.message)
+        }else{
+            console.log(error)
+            toast.error("Failed to fetch members")
+        }
+    }
+}

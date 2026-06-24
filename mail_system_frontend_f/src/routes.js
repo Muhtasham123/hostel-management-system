@@ -1,0 +1,122 @@
+import React from "react";
+
+// Admin Imports
+import MainDashboard from "views/admin/default";
+import SignIn from "views/auth/SignIn";
+import SignUp from "views/auth/SignUp";
+import Members from "views/admin/members";
+import Floors from "views/admin/floors";
+import Rooms from "views/admin/rooms";
+import SentMails from "views/admin/sentmails"
+import ScheduledMails from "views/admin/scheduledmails"
+import Hostels from "views/admin/hostels"
+import PublicView from "views/admin/publicView/index"
+import Reviews from "views/admin/reviews/index"
+
+
+// Icon Imports
+import {
+  MdHome,
+  MdLock,
+} from "react-icons/md";
+
+import { FaUsersLine } from "react-icons/fa6";
+import { FaRegBuilding, FaDoorOpen } from "react-icons/fa";
+import { IoMdSend } from "react-icons/io";
+import { SlCalender } from "react-icons/sl";
+import { FaUsersViewfinder } from "react-icons/fa6";
+import { MdReviews } from "react-icons/md";
+
+
+const routes = [
+  {
+    name: "Main Dashboard",
+    layout: "/admin",
+    path: "default",
+    contexted:true,
+    icon: <MdHome className="h-6 w-6" />,
+    component: <MainDashboard />,
+  },
+
+  {
+    name: "Public View",
+    layout: "/admin",
+    path: "public-view",
+    contexted:true,
+    icon: <FaUsersViewfinder className="h-6 w-6" />,
+    component: <PublicView />,
+  },
+
+  {
+    name: "Sign In",
+    layout: "/auth",
+    path: "owner/sign-in",
+    contexted:false,
+    icon: <MdLock className="h-6 w-6" />,
+    component: <SignIn />,
+  },
+  {
+    name: "Sign Up",
+    layout: "/auth",
+    path: "owner/sign-up",
+    contexted:false,
+    icon: <MdLock className="h-6 w-6" />,
+    component: <SignUp />,
+  },
+  {
+    name: "Your hostels",
+    layout: "/admin",
+    path: "hostels",
+    icon: <FaRegBuilding className="h-6 w-6" />,
+    component: <Hostels />,
+  },
+  {
+    name: "Sent",
+    layout: "/admin",
+    path: "sent",
+    contexted:true,
+    icon: <IoMdSend  className="h-6 w-6" />,
+    component: <SentMails />,
+  },
+  {
+    name: "Scheduled Mails",
+    layout: "/admin",
+    path: "scheduled-mails",
+    contexted:true,
+    icon: <SlCalender />,
+    component: <ScheduledMails />,
+  },
+  {
+    name: "Members",
+    layout: "/admin",
+    path: "members",
+    contexted:true,
+    icon: <FaUsersLine  className="h-6 w-6" />,
+    component: <Members />,
+  },
+  {
+    name: "Floors",
+    layout: "/admin",
+    path: "floors",
+    contexted:true,
+    icon: <FaRegBuilding className="h-6 w-6" />,
+    component: <Floors />,
+  },
+  {
+    name: "Rooms",
+    layout: "/admin",
+    path: "rooms",
+    contexted:true,
+    icon: <FaDoorOpen className="h-6 w-6" />,
+    component: <Rooms />,
+  },
+  {
+    name: "Reviews",
+    layout: "/admin",
+    path: "reviews",
+    contexted:true,
+    icon: <MdReviews className="h-6 w-6"/>,
+    component: <Reviews />,
+  },
+];
+export default routes;
